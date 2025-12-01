@@ -104,8 +104,7 @@ namespace databinding
         }
 
     
-    }
-        public partial class MainPage : ContentPage
+    }   public partial class MainPage : ContentPage
     {
         
 
@@ -120,6 +119,7 @@ namespace databinding
         }
 
     }
+     
 
 }
 

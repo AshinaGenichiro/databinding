@@ -4,31 +4,26 @@
              x:Class="DatabindingZad4.MainPage">
 
     <ScrollView>
-        <VerticalStackLayout
-            Padding="30,0"
-            Spacing="25">
-            <Entry x:Name="Price"
-                 Placeholder="Wprowadź cenę"
-                 Text="{Binding Price}" />
-            <Entry x:Name="Nazwa" 
-                Placeholder="Wpisz nazwę"
-                   Text="{Binding Name}"
-                   />
-            <Stepper 
-                Minimum="0"
-                Increment="1"
-                Value="{Binding Quantity}"
-                />
-            <Label 
-                Text="{Binding Quantity, StringFormat='Ilość : {0}'}"
-                />
-            <Button
-                Text="Dodaj element"
-                
-                />
+        <VerticalStackLayout Padding="30,0" Spacing="25">
+
+            <Entry x:Name="NameEntry" Placeholder="Wpisz nazwę" />
+            <Entry x:Name="PriceEntry" Placeholder="Wprowadź cenę" />
+            <Stepper x:Name="QuantityStepper"
+                     Minimum="1"
+                     Increment="1"
+                     Value="1" />
+            <Label Text="{Binding Source={x:Reference QuantityStepper}, Path=Value, StringFormat='Ilość: {0}'}" />
+
+            <Button Text="Dodaj element" Clicked="OnAddClicked" />
+
+            <Label Text="{Binding TotalSum, StringFormat='Suma całkowita: {0:C}'}"
+                   HorizontalOptions="End"
+                   FontAttributes="Bold" />
+
+          
             <CollectionView ItemsSource="{Binding ShoppingItems}">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate >
+                    <DataTemplate>
                         <Grid ColumnDefinitions="*, Auto" Padding="5" Margin="0,5">
                             <VerticalStackLayout Grid.Column="0" Spacing="2">
                                 <Label Text="{Binding Name}" FontAttributes="Bold" />
@@ -36,16 +31,12 @@
                                 <Label Text="{Binding Quantity, StringFormat='Ilość: {0}'}" />
                                 <Label Text="{Binding TotalPrice, StringFormat='Razem: {0:C}'}" />
                             </VerticalStackLayout>
-                            <Button Grid.Column="1" Text="Usuń" 
-                                  
-                                    CommandParameter="{Binding .}" />
+                          
+                            <Button Grid.Column="1" Text="Usuń" Clicked="OnRemoveClicked" />
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-
-        
         </VerticalStackLayout>
     </ScrollView>
-
 </ContentPage>

@@ -1,130 +1,160 @@
-﻿using System.Collections.ObjectModel;
+﻿using Microsoft.Maui.Controls;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Linq;
 
-namespace DatabindingZad4 { 
-     public class ShoppingItem : INotifyPropertyChanged
-
+namespace DatabindingZad4
 {
-
-    private string _name;
-
-    private double _price;
-
-    private int _quantity;
-
-    private double _totalPrice;
-
-    public string Name
+    public class ShoppingItem : INotifyPropertyChanged
     {
-        get { return _name; }
-        set
+        private string _name;
+        private double _price;
+        private int _quantity;
+
+        public string Name
         {
-            if (!string.IsNullOrWhiteSpace(value))
+            get => _name;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    throw new Exception("Nazwa nie moze byc pusta");
                 _name = value;
-            else
-                throw new Exception("Nazwa nie moze byc pusta");
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(TotalPrice));
-        }
-    }
-
-    public double Price
-    {
-        get => _price;
-        set
-        {
-            if (_price != value)
-            {
-                _price = value;
-            }
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(TotalPrice));
-        }
-    }
-
-    public int Quantity
-    {
-        get => _quantity;
-        set
-        {
-            if (_quantity != value)
-            {
-                _quantity = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(TotalPrice));
             }
         }
-    }
-    public ShoppingItem(string name, double price, int quantity)
-    {
-        Name = name;
-        Price = price;
-        Quantity = quantity;
-    }
 
-    public double TotalPrice
-    {
-        get
+        public double Price
         {
-            return Price * Quantity;
-        }
-    }
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-}
-    public class ShoppingListViewModel : INotifyPropertyChanged
-    {
-        private ObservableCollection<ShoppingItem> Items;
-        private double _totalSum;
-        public double TotalSum
-        {
-            get
+            get => _price;
+            set
             {
-                return Items.Sum(item => item.TotalPrice);
-            }
-        }
-        public void AddItem(string name, double price, int quantity)
-        {
-            Items.Add(new ShoppingItem(name, price, quantity));
-        }
-        public void RemoveItem(ShoppingItem item)
-        {
-            Items.Remove(item);
-        }
-        public void CollectionView()
-        {
-            foreach (ShoppingItem item in Items)
-            {
-                Console.WriteLine(item.Name, item.Price, item.Quantity, item.TotalPrice);
+                if (_price != value)
+                {
+                    _price = value;
+                }
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(TotalPrice));
             }
         }
 
+        public int Quantity
+        {
+            get => _quantity;
+            set
+            {
+                if (_quantity != value)
+                {
+                    _quantity = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(TotalPrice));
+                }
+            }
+        }
+
+        public ShoppingItem(string name, double price, int quantity)
+        {
+            Name = name;
+            Price = price;
+            Quantity = quantity;
+        }
+
+        public double TotalPrice => Price * Quantity;
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+    }
 
+    public class ShoppingListViewModel : INotifyPropertyChanged
+    {
+        public ObservableCollection<ShoppingItem> ShoppingItems { get; }
+
+        public double TotalSum => ShoppingItems.Sum(item => item.TotalPrice);
+
+        public ShoppingListViewModel()
+        {
+            ShoppingItems = new ObservableCollection<ShoppingItem>();
+            ShoppingItems.CollectionChanged += (s, e) =>
+            {
+                if (e.OldItems != null)
+                {
+                    foreach (ShoppingItem item in e.OldItems)
+                        item.PropertyChanged -= OnItemPropertyChanged;
+                }
+                if (e.NewItems != null)
+                {
+                    foreach (ShoppingItem item in e.NewItems)
+                        item.PropertyChanged += OnItemPropertyChanged;
+                }
+                OnPropertyChanged(nameof(TotalSum));
+            };
+        }
+
+        private void OnItemPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ShoppingItem.TotalPrice))
+            {
+                OnPropertyChanged(nameof(TotalSum));
+            }
+        }
+
+        public void AddItem(string name, double price, int quantity)
+        {
+            var newItem = new ShoppingItem(name, price, quantity);
+            ShoppingItems.Add(newItem);
+        }
+
+        public void RemoveItem(ShoppingItem item)
+        {
+            ShoppingItems.Remove(item);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 
     public partial class MainPage : ContentPage
-
     {
-
-    
+        private readonly ShoppingListViewModel _viewModel;
 
         public MainPage()
         {
             InitializeComponent();
-            BindingContext = new ShoppingItem("item",2,2);
+            _viewModel = new ShoppingListViewModel();
+            BindingContext = _viewModel;
+        }
 
+        private void OnAddClicked(object sender, EventArgs e)
+        {
+            string name = NameEntry.Text;
+            if (!double.TryParse(PriceEntry.Text, out double price))
+            {
+                DisplayAlert("Błąd", "Nieprawidłowa cena.", "OK");
+                return;
+            }
+            int quantity = (int)QuantityStepper.Value;
+
+            _viewModel.AddItem(name, price, quantity);
+            name = "";
+            price = 0;
+            quantity = 1;
+        }
+
+        private void OnRemoveClicked(object sender, EventArgs e)
+        {
+            if (sender is Button button && button.BindingContext is ShoppingItem item)
+            {
+                _viewModel.RemoveItem(item);
+            }
         }
     }
 }
-

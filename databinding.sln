@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "databinding", "databinding\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabindingZad3", "DatabindingZad3\DatabindingZad3.csproj", "{317560B6-EBC2-4C70-987C-6766BF41A458}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabindingZad4", "DatabindingZad4\DatabindingZad4.csproj", "{69B0AA8A-D159-4EE9-BAAA-776995DFCADC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,8 +21,13 @@ Global
 		{8D8430A7-FB28-4795-BDC2-193B6E624F00}.Release|Any CPU.Build.0 = Release|Any CPU
 		{317560B6-EBC2-4C70-987C-6766BF41A458}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{317560B6-EBC2-4C70-987C-6766BF41A458}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{317560B6-EBC2-4C70-987C-6766BF41A458}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{317560B6-EBC2-4C70-987C-6766BF41A458}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{317560B6-EBC2-4C70-987C-6766BF41A458}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69B0AA8A-D159-4EE9-BAAA-776995DFCADC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69B0AA8A-D159-4EE9-BAAA-776995DFCADC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69B0AA8A-D159-4EE9-BAAA-776995DFCADC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69B0AA8A-D159-4EE9-BAAA-776995DFCADC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
